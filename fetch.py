@@ -1,4 +1,4 @@
-import json, sys, settings, random
+import json, sys, settings_bbb, random
 from runBBB import *
 import lasair
 
@@ -16,7 +16,7 @@ def handle_object(objectId, L, topic_out):
     explanation    = ''
     # first character of classification is b or e
     try:
-        url = settings.URL_ROOT + '%s_%s.png' % (objectId, classification[0])   
+        url = settings_bbb.URL_ROOT + '%s_%s.png' % (objectId, classification[0])   
     except:
         url = ''
 
@@ -39,23 +39,23 @@ if len(sys.argv) > 1 and sys.argv[1] == 'verbose':
 # first we set up pulling the stream from Lasair
 # a fresh group_id gets all, an old group_id starts where it left off
 #group_id = 'gid%04d' % random.randint(1, 1000)
-group_id = settings.GROUP_ID
+group_id = settings_bbb.GROUP_ID
 
 # a filter from Lasair, example 'lasair_2SN-likecandidates'
-topic_in = settings.TOPIC_IN
+topic_in = settings_bbb.TOPIC_IN
 
 # kafka consumer that we can suck from
 consumer = lasair.lasair_consumer('kafka.lsst.ac.uk:9092', group_id, topic_in)
 
 # the lasair client will be used for pulling all the info about the object
 # and for annotating it
-L = lasair.lasair_client(settings.API_TOKEN)
+L = lasair.lasair_client(settings_bbb.API_TOKEN)
 
 # TOPIC_OUT is an annotator owned by a user. API_TOKEN must be that users token.
-topic_out = settings.TOPIC_OUT
+topic_out = settings_bbb.TOPIC_OUT
 
 # just get a few to start
-max_alert = settings.MAX_ALERT
+max_alert = settings_bbb.MAX_ALERT
 
 n_alert = n_annotate = 0
 while n_alert < max_alert:

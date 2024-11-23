@@ -1,5 +1,5 @@
 import json, sys
-import settings
+import settings_bbb
 from coreBBB import *
 from lasair import LasairError, lasair_client as lasair
 endpoint = "https://lasair-ztf.lsst.ac.uk/api"
@@ -51,7 +51,7 @@ def get_lc(objectId, L, nforced, verbose=True):
         f = forced[i]
         if f['mjd'] < lc['mjd_discovery']:
             t = f['mjd']-lc['mjd_discovery']
-            magzpsci = settings.MAGZPSCI
+            magzpsci = settings_bbb.MAGZPSCI
             lc['t'].insert(0, t)
             lc['pb'].insert(0, f['fid'])
             lc['flux'].insert(0, f['forcediffimflux'])
@@ -78,7 +78,7 @@ def make_fit(objectId, L, nforced, pexpit0, pbazin0, verbose=True):
                 (dicte['T'], g_minus_r(dicte['T']), dicte['k']))
         filename = '%s_e.png' % objectId
         try:
-            plot(lc, dicte, settings.IMAGE_DIR + filename, False)
+            plot(lc, dicte, settings_bbb.IMAGE_DIR + filename, False)
         except:
             pass
         dicte['post_discovery'] = lc['post_discovery']
@@ -94,7 +94,7 @@ def make_fit(objectId, L, nforced, pexpit0, pbazin0, verbose=True):
                 (dictb['T'],  g_minus_r(dictb['T']), dictb['kr'], dictb['kf']))
         filename = '%s_b.png' % objectId
         try:
-            plot(lc, dictb, settings.IMAGE_DIR + filename, True)
+            plot(lc, dictb, settings_bbb.IMAGE_DIR + filename, True)
         except:
             pass
         dictb['post_discovery'] = lc['post_discovery']
@@ -117,7 +117,7 @@ def run(objectId, L, verbose=True):
     pbazin0 = [A, T, t0, kr, kf]
 
 # see if we can find four forced phot points before first detection
-    nforced = settings.N_FORCED
+    nforced = settings_bbb.N_FORCED
 
     (dicte, dictb) =  make_fit(objectId, L, nforced, pexpit0, pbazin0, verbose)
     if dicte: 
