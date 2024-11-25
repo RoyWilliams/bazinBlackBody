@@ -158,7 +158,7 @@ def plot(lc, dict, filename, isbazin):
     fig = plt.figure(figsize=(6,6))
     ax = plt.subplot(1, 1, 1) 
     ax.set_yscale('log')
-    ax.scatter([lc['mjd_discovery']], [0.0], s = 180, marker = "D", color = 'black')
+    ax.scatter([0.0], [0.0], s = 180, marker = "D", color = 'black')
     trange = np.arange(min(tobs), max(tobs)+1, 1)
 
     for iwl in range(nwl):
