@@ -1,27 +1,9 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import settings_bbb
 
 sigma=10
-
-# Wavelengths of the ugrizy filters
-
-wl = [
-0.380,  # u not using this filter
-0.500,  # g
-0.620,  # r
-0.740,  # i
-0.880,  # z
-1.000  # y
-]
-wltag = [
-'u',  # u not using this filter
-'g',
-'r',
-'i',
-'z',
-'y'
-]
 color = ["#9900cc", "#3366ff", "#33cc33", "#ffcc00", "#ff0000", "#cc6600"]
 nwl = 6
 
@@ -30,7 +12,10 @@ def blackbody(wl, T):
     return np.power(wl, -3.0) / (np.exp(hck/(wl*T)) - 1)
 
 def g_minus_r(T):
-    flux_ratio = blackbody(wl[1], T) / blackbody(wl[2], T)
+    gband = 1
+    rband = 2
+    flux_ratio = blackbody(settings_bbb.WL[gband], T) / \
+                 blackbody(settings_bbb.WL[rband], T)
     return -2.5 * math.log10(flux_ratio)
 
 def bazin(t, lam, p):
@@ -151,7 +136,6 @@ def fit_expit(tobs, lobs, fobs, pexpit0, verbose=True):
 def plot(lc, dict, filename, isbazin):
     npoint = len(lc['t'])
     tobs = lc['t']
-    lobs = [wl[i] for i in lc['pb']]
     fobs = lc['flux']
 
     plt.rcParams.update({'font.size': 8})
@@ -161,14 +145,15 @@ def plot(lc, dict, filename, isbazin):
     ax.scatter([0.0], [0.0], s = 180, marker = "D", color = 'black')
     trange = np.arange(min(tobs), max(tobs)+1, 1)
 
-    for iwl in range(nwl):
+    wl = settings_bbb.WL
+    for iwl in range(len(wl)):
         tobs_ = []
         fobs_ = []
         for i in range(npoint):
-            if lobs[i] == wl[iwl]:
+            if lc['bandindex'][i] == iwl:
                 tobs_.append(tobs[i])
                 fobs_.append(fobs[i])
-        ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=wltag[iwl])
+        ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=settings_bbb.BANDS[iwl])
         if dict:
             if isbazin:
                 fitb = [dict['A'], dict['T'], dict['t0'], dict['kr'], dict['kf']]

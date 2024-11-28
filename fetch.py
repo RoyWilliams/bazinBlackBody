@@ -3,8 +3,8 @@ from runBBB import *
 import lasair
 
 # This function deals with an object once it is received from Lasair
-def handle_object(objectId, L, topic_out):
-    dict = run(objectId, L, verbose=verbose)
+def handle_object(alert, L, topic_out):
+    dict = run(alert, plotdir=settings_bbb.IMAGE_DIR)
 
     if not dict:
         return 0
@@ -33,9 +33,6 @@ def handle_object(objectId, L, topic_out):
     return 1
 
 #####################################
-verbose = False
-if len(sys.argv) > 1 and sys.argv[1] == 'verbose':
-    verbose = True
 # first we set up pulling the stream from Lasair
 # a fresh group_id gets all, an old group_id starts where it left off
 #group_id = 'gid%04d' % random.randint(1, 1000)
