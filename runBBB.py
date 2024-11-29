@@ -5,11 +5,6 @@ from coreBBB import *
 is_lsst    = settings_bbb.LSST
 verbose    = settings_bbb.VERBOSE
 
-lasair_api = None
-def set_lasair_api(v):
-    global lasair_api
-    lasair_api = v
-
 def mag2flux(mag, magerr, magzpsci):
     # flux in microJ
     flux =  math.pow(10, (magzpsci-mag)/2.5)
