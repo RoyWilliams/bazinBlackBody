@@ -52,7 +52,7 @@ def func_expit(params, tlam, f):
     return residual
 
 from scipy.optimize import leastsq
-def fit_bazin(tobs, lobs, fobs, pbazin0, verbose=True):       
+def fit_bazin(tobs, lobs, fobs, pbazin0, verbose=False):       
     npoint = len(tobs)
     tlobs = np.vstack((tobs, lobs))
     SST = np.sum((fobs - np.mean(fobs))**2)
@@ -75,16 +75,16 @@ def fit_bazin(tobs, lobs, fobs, pbazin0, verbose=True):
     dict['kr'] = fit[3]
     dict['kf'] = fit[4]
     if dict['kr'] < 0.0: 
-        print('kr<0')
+        if verbose: print('kr<0')
         return None
     if dict['kf'] < 0.0: 
-        print('kf<0')
+        if verbose: print('kf<0')
         return None
     if dict['kr'] > 15.0: 
-        print('kr>15')
+        if verbose: print('kr>15')
         return None
     if dict['kf'] > 2.0: 
-        print('kf>2')
+        if verbose: print('kf>2')
         return None
     
     dict['Aerr'] = err[0]
