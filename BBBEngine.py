@@ -20,7 +20,7 @@ class BBB():
         self.pbazin0 = [A, T, t0, kr, kf]
         self.verbose = verbose
 
-    def get_lc(self, alert):
+    def read_alert(self, alert):
         if self.is_lsst:
             objectId = alert['diaObject']['diaObjectId']
             sources  = alert['diaSourcesList']
@@ -244,7 +244,7 @@ if __name__ == '__main__':
     objectId = 'ZTF24absojni'
     alert = lasair_api.objects([objectId])[0]
 
-    BE.get_lc(alert)
+    BE.read_alert(alert)
     (dicte, dictb) =  BE.make_fit(alert)
     if dicte: 
         print(dicte)

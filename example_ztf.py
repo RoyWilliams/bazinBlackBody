@@ -12,7 +12,7 @@ with open('sample_alert/ZTF24absojni.json', 'w') as f:
 
 import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
-BE.get_lc(alert)
+BE.read_alert(alert)
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte: 
     BE.plot(alert, dicte, 'image/%s.png'%objectId)

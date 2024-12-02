@@ -1,14 +1,51 @@
-# BBB
+# The BazinBlackBody package (BBB)
+
+  
+
 Time-Wavelength fit to find fast rising transients. BazinBlackBody or ExponentialBlackBody
 
-Algorithm
-https://roywilliams.github.io/papers/Bazin_Exp_Blackbody.pdf
+The algorithm is motivated and defined [here](https://roywilliams.github.io/papers/Bazin_Exp_Blackbody.pdf)
 
-Those that are fast risers can be seen at 
-https://lasair-ztf.lsst.ac.uk/filters/1865/run/
+The input is either a ZTF or LSST alert structure, and the output is the temperature `T` and rise rate `kr` or `k`, and perhaps the fall rate `kf`.
+The `k` and `kr` are rise rate in mags per day, and `T` is black body temperature in kiloKelvin.
+How to use the package:
 
-Those with the transient at the center of the galaxy (NT) can be seen at
-https://lasair-ztf.lsst.ac.uk/filters/1868/run/
+- Copy the settings_bbb_template.py into your own settings.py.
+    Most of this is intended for using the 'annotate' feature of BBB, which pulls filtered alerts from Lasair, runs BBB, then pushes them back to Lasair as annotations.
 
-The k and kr are rise rate in mags per day, and "temp" is black body temperature in kilokelvin. Age is the time since the discovery epoch.
+- Decide which survey you will use: LSST or ZTF.
+    This decides the schema that BBB will use to get its inputs from the alert packet. What is wanted are in the first column, and the idiosyncratic survey name in other columns.
 
+| name | ZTF | LSST |
+|--------|-------------|---------|
+| MJD | mjd | midpointMjdTai |
+| Object |  | `diaObject` |
+| Sources | `diaSourceList` | `candidates` |
+| Forced | forcedphot` | `diaForcedSourcesList` |
+| Band index | `fid` | `band` |
+| Flux | converted from `magpsf` | `psfFlux` |
+| Flux error | converted from `sigmapsf` | `psfFluxError` |
+| Forced Flux | `forcediffimflux` | `psfFlux` |
+| Forced Flux error | `forcediffimfluxunc` | `psfFluxErr` |
+
+Now the code can be called as follows:
+```
+import BBBEngine
+BE = BBBEngine.BBB('ZTF', verbose=True)
+BE.read_alert(alert)
+(dicte, dictb) =  BE.make_fit(alert)
+if dicte:
+    BE.plot(alert, dicte, 'image/%s.png'%objectId)
+if dictb:
+    BE.plot(alert, dictb, 'image/%s.png'%objectId)
+```
+In addition to the survey names (mandatory), and the verbose flag, the class instantiation can have other parameters for the initial conditions of the fitting process:
+
+`A=10000, T=8, t0=-6, kr=1, kf=0.1`
+
+Where 
+- A is the overall scale (in nanoJanskies for LSST and microJanskies for ZTF)
+- and T is the initial guess for the temparature in kiloKelvins
+- and kr and kf are initial guesses for the rise rate per day and the fall rate per day.
+
+The return from make_fit may contain two dictionaries, one for the Exponential-Blackbody fit to the lightcurve (linear in magnitude), and the other the result of the Bazin-Blackbody fit.
