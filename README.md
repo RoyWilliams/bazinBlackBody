@@ -21,7 +21,7 @@ How to use the package:
 | MJD | mjd | midpointMjdTai |
 | Object |  | `diaObject` |
 | Sources | `diaSourceList` | `candidates` |
-| Forced | forcedphot` | `diaForcedSourcesList` |
+| Forced | `forcedphot` | `diaForcedSourcesList` |
 | Band index | `fid` | `band` |
 | Flux | converted from `magpsf` | `psfFlux` |
 | Flux error | converted from `sigmapsf` | `psfFluxError` |
