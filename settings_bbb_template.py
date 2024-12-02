@@ -1,4 +1,3 @@
-LSST      = True
 VERBOSE   = True
 
 API_TOKEN = 'lasair AI token here'
