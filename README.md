@@ -44,8 +44,8 @@ In addition to the survey names (mandatory), and the verbose flag, the class ins
 `A=10000, T=8, t0=-6, kr=1, kf=0.1`
 
 Where 
-- A is the overall scale (in nanoJanskies for LSST and microJanskies for ZTF)
-- and T is the initial guess for the temparature in kiloKelvins
-- and kr and kf are initial guesses for the rise rate per day and the fall rate per day.
+- `A` is the overall scale (in nanoJanskies for LSST and microJanskies for ZTF)
+- and `T` is the initial guess for the temparature in kiloKelvins
+- and `kr` and `kf` are initial guesses for the rise rate per day and the fall rate per day.
 
 The return from make_fit may contain two dictionaries, one for the Exponential-Blackbody fit to the lightcurve (linear in magnitude), and the other the result of the Bazin-Blackbody fit.
