@@ -1,5 +1,5 @@
-import json, sys
-from coreBBB import *
+import json, sys, numpy
+from BBBcore import *
 WL    = [0.380,     0.500,     0.620,     0.740,     0.880,     1.000, ]
 BANDS = ['u',       'g',       'r'  ,     'i'  ,     'z'  ,     'y'    ]
 
@@ -21,6 +21,7 @@ class BBB():
         self.pbazin0 = [A, T, t0, kr, kf]
         self.nforced = 4
         self.verbose = verbose
+        np.seterr(all="ignore")
 
     def read_alert(self, alert):
         if self.is_lsst:
