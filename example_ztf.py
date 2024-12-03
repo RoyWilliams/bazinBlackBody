@@ -1,8 +1,8 @@
 import json
-import settings_bbb
+import settings_ann
 from lasair import LasairError, lasair_client as lasair
 endpoint = "https://lasair-ztf.lsst.ac.uk/api"
-lasair_api = lasair(settings_bbb.API_TOKEN)
+lasair_api = lasair(settings_ann.API_TOKEN)
 
 objectId = 'ZTF24absojni'
 alert = lasair_api.objects([objectId])[0]

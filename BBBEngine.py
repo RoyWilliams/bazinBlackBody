@@ -1,6 +1,7 @@
 import json, sys
-import settings_bbb
 from coreBBB import *
+WL    = [0.380,     0.500,     0.620,     0.740,     0.880,     1.000, ]
+BANDS = ['u',       'g',       'r'  ,     'i'  ,     'z'  ,     'y'    ]
 
 def mag2flux(mag, magerr, magzpsci):
     # flux in microJ
@@ -9,7 +10,7 @@ def mag2flux(mag, magerr, magzpsci):
     return (flux, fluxerr)
 
 class BBB():
-    def __init__(self, survey, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
+    def __init__(self, survey, nforced=4, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
         self.is_lsst = (survey == 'LSST')
         A  = 10000
         T  = 8
@@ -18,6 +19,7 @@ class BBB():
         kf = 0.1
         self.pexpit0 = [A, T, kr-kf]
         self.pbazin0 = [A, T, t0, kr, kf]
+        self.nforced = 4
         self.verbose = verbose
 
     def read_alert(self, alert):
@@ -53,7 +55,7 @@ class BBB():
             print('%s has %s' % (objectId, len(sources)))
         for c in sources:
             if self.is_lsst:
-                lc['bandindex']     .append(settings_bbb.BANDS.index(c['band']))
+                lc['bandindex']     .append(BANDS.index(c['band']))
                 (flux, fluxerr) = (c['psfFlux'], c['psfFluxErr'])
             else:
                 lc['bandindex']     .append(c['fid'])
@@ -68,7 +70,7 @@ class BBB():
         forced.sort(key = lambda f: f[mjdkey])
         
     # see if we can find four forced phot points before first detection
-        nforced = settings_bbb.N_FORCED
+        nforced = self.nforced
     
         nforced_found = 0
         for ii in range(len(forced)): # go backwards just past discovery
@@ -78,7 +80,7 @@ class BBB():
                 t = f[mjdkey]-lc['mjd_discovery']
                 lc['t'].insert(0, t)
                 if self.is_lsst:
-                    lc['bandindex'].insert(0, settings_bbb.BANDS.index(f[bandkey]))
+                    lc['bandindex'].insert(0, BANDS.index(f[bandkey]))
                     (flux, fluxerr) = (f['psfFlux'], f['psfFluxErr'])
                 else:
                     lc['bandindex'].insert(0, f[bandkey])
@@ -96,7 +98,7 @@ class BBB():
             return (None, None)
     
         tobs = lc['t']
-        lobs = [settings_bbb.WL[i] for i in lc['bandindex']]
+        lobs = [WL[i] for i in lc['bandindex']]
         fobs = lc['flux']
         npoint = len(lc['t'])
         objectId = lc['objectId']
@@ -140,22 +142,21 @@ class BBB():
         ax.scatter([0.0], [0.0], s = 180, marker = "D", color = 'black')
         trange = np.arange(min(tobs), max(tobs)+1, 1)
         
-        wl = settings_bbb.WL
-        for iwl in range(len(wl)):
+        for iwl in range(nwl):
             tobs_ = []
             fobs_ = []
             for i in range(npoint):
                 if lc['bandindex'][i] == iwl:
                     tobs_.append(tobs[i])
                     fobs_.append(fobs[i])
-            ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=settings_bbb.BANDS[iwl])
+            ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=BANDS[iwl])
             if dictx:
                 if isbazin:
                     fitb = [dictx['A'], dictx['T'], dictx['t0'], dictx['kr'], dictx['kf']]
-                    ax.plot(trange, bazin(trange, wl[iwl], fitb), color=color[iwl])
+                    ax.plot(trange, bazin(trange, WL[iwl], fitb), color=color[iwl])
                 else:
                     fite = [dictx['A'], dictx['T'], dictx['k']]
-                    ax.plot(trange, expit(trange, wl[iwl], fite), color=color[iwl])
+                    ax.plot(trange, expit(trange, WL[iwl], fite), color=color[iwl])
     
         fluxmin = max(1, np.min(fobs))
         fluxmax = np.max(fobs)
@@ -192,22 +193,21 @@ class BBB():
         ax.scatter([0.0], [0.0], s = 180, marker = "D", color = 'black')
         trange = np.arange(min(tobs), max(tobs)+1, 1)
         
-        wl = settings_bbb.WL
-        for iwl in range(len(wl)):
+        for iwl in range(len(WL)):
             tobs_ = []
             fobs_ = []
             for i in range(npoint):
                 if lc['bandindex'][i] == iwl:
                     tobs_.append(tobs[i])
                     fobs_.append(fobs[i])
-            ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=settings_bbb.BANDS[iwl])
+            ax.errorbar(tobs_, fobs_, yerr=sigma, fmt='o', color=color[iwl], label=BANDS[iwl])
             if dictx:
                 if isbazin:
                     fitb = [dictx['A'], dictx['T'], dictx['t0'], dictx['kr'], dictx['kf']]
-                    ax.plot(trange, bazin(trange, wl[iwl], fitb), color=color[iwl])
+                    ax.plot(trange, bazin(trange, WL[iwl], fitb), color=color[iwl])
                 else:
                     fite = [dictx['A'], dictx['T'], dictx['k']]
-                    ax.plot(trange, expit(trange, wl[iwl], fite), color=color[iwl])
+                    ax.plot(trange, expit(trange, WL[iwl], fite), color=color[iwl])
     
         fluxmin = max(1, np.min(fobs))
         fluxmax = np.max(fobs)
@@ -232,23 +232,3 @@ class BBB():
         plt.title(right_text, fontsize=10, loc='right')
         plt.savefig(filename)
         plt.close(fig)
-        
-if __name__ == '__main__':
-    BE = BBB()
-#    file = 'sample_alert/99999999999.json'
-#    alert = json.loads(open(file).read())
-
-    from lasair import LasairError, lasair_client as lasair
-    endpoint = "https://lasair-ztf.lsst.ac.uk/api"
-    lasair_api = lasair(settings_bbb.API_TOKEN)
-    objectId = 'ZTF24absojni'
-    alert = lasair_api.objects([objectId])[0]
-
-    BE.read_alert(alert)
-    (dicte, dictb) =  BE.make_fit(alert)
-    if dicte: 
-        print(dicte)
-        BE.plot(alert, dicte, '%s.png'%objectId)
-    if dictb: 
-        print(dictb)
-        BE.plot(alert, dictb, '%s.png'%objectId)

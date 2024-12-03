@@ -1,11 +1,12 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-import settings_bbb
 
-sigma=10
+WL    = [0.380,     0.500,     0.620,     0.740,     0.880,     1.000, ]
+BANDS = ['u',       'g',       'r'  ,     'i'  ,     'z'  ,     'y'    ]
 color = ["#9900cc", "#3366ff", "#33cc33", "#ffcc00", "#ff0000", "#cc6600"]
-nwl = 6
+nwl = len(BANDS)
+sigma=10
 
 def blackbody(wl, T):
     hck = 14.387
@@ -14,8 +15,8 @@ def blackbody(wl, T):
 def g_minus_r(T):
     gband = 1
     rband = 2
-    flux_ratio = blackbody(settings_bbb.WL[gband], T) / \
-                 blackbody(settings_bbb.WL[rband], T)
+    flux_ratio = blackbody(WL[gband], T) / \
+                 blackbody(WL[rband], T)
     return -2.5 * math.log10(flux_ratio)
 
 def bazin(t, lam, p):
