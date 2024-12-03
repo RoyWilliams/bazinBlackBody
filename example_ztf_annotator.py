@@ -49,25 +49,28 @@ while n_alert < max_alert:
     objectId       = jsonmsg['objectId']
 
     # Fetch full object info from the API
-    alert = L.objects([objectId])[0]
+    alert = lasair_api.objects([objectId])[0]
 
     # Present it to the fitting system
     BE.read_alert(alert)
 
     # Make the fit(s)
-    (dicte, dictb) =  BE.make_fit(alert)
+    (fit_e, fit_b) =  BE.make_fit(alert)
 
     # Make plots; select one of the fits
-    if dicte:
-        BE.plot(alert, dicte, '%s/%s_e.png'% (settings_ann.IMAGE_DIR, objectId))
+    fit = None
+    if fit_e:
+        BE.plot(alert, fit_e, '%s/%s_e.png'% (settings_ann.IMAGE_DIR, objectId))
         classification = 'exp'
-        dict = dicte
-    if dictb:
-        BE.plot(alert, dictb, '%s/%s_b.png'% (settings_ann.IMAGE_DIR, objectId))
+        fit = fit_e
+    if fit_b:
+        BE.plot(alert, fit_b, '%s/%s_b.png'% (settings_ann.IMAGE_DIR, objectId))
         classification = 'bazin'
-        dict = dicte
-    if not dict:
-        return 0
+        fit = fit_b
+
+    # If no fit was converged, go to the next
+    if not fit:
+        continue
 
     # Explanation in natural language
     explanation    = ''
@@ -82,7 +85,7 @@ while n_alert < max_alert:
         classification,
         version='0.1',
         explanation=explanation,
-        classdict=dict,
+        classdict=fit,
         url=url)
     print(objectId, '-- annotated!\n')
     n_alert += 1
