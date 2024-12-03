@@ -1,5 +1,5 @@
 import json, sys, numpy
-from BBBcore import *
+from BBBCore import *
 WL    = [0.380,     0.500,     0.620,     0.740,     0.880,     1.000, ]
 BANDS = ['u',       'g',       'r'  ,     'i'  ,     'z'  ,     'y'    ]
 
@@ -68,8 +68,8 @@ class BBB():
     
         lc['post_discovery'] = lc['t'][-1]
             
+    # try to prepend with some forced phot points    
         forced.sort(key = lambda f: f[mjdkey])
-        
     # see if we can find four forced phot points before first detection
         nforced = self.nforced
     
@@ -91,10 +91,11 @@ class BBB():
                 nforced_found += 1
                 if nforced_found >= nforced:
                     break
-        self.lc = lc
+        return lc
     
     def make_fit(self, alert):
-        lc = self.lc
+        # extract the lightcurve as a time-wavelenght surface
+        lc = self.lc = self.read_alert(alert)
         if not lc:
             return (None, None)
     

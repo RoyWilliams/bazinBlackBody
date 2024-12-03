@@ -10,8 +10,6 @@ alert = json.loads(open(file).read())
 import BBBEngine
 BE = BBBEngine.BBB('LSST', verbose=True)
 
-BE.read_alert(alert)
-
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte: 
     BE.plot(alert, dicte, 'image/%s_e.png'%objectId)

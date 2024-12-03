@@ -11,7 +11,6 @@ alert = json.loads(open(file).read())
 # Run the fitting engine
 import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
-BE.read_alert(alert)
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte: 
     BE.plot(alert, dicte, 'image/%s_e.png'%objectId)

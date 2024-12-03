@@ -16,7 +16,6 @@ alert = lasair_api.objects([objectId])[0]
 # Now run the fits
 import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
-BE.read_alert(alert)
 
 # Both BazinBlackBody and ExponentialBlackBody fits are attempted
 (dicte, dictb) =  BE.make_fit(alert)

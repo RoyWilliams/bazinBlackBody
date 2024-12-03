@@ -51,9 +51,6 @@ while n_alert < max_alert:
     # Fetch full object info from the API
     alert = lasair_api.objects([objectId])[0]
 
-    # Present it to the fitting system
-    BE.read_alert(alert)
-
     # Make the fit(s)
     (fit_e, fit_b) =  BE.make_fit(alert)
 
