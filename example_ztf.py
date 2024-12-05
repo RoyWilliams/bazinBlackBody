@@ -14,7 +14,7 @@ objectId = 'ZTF24absojni'
 alert = lasair_api.objects([objectId])[0]
 
 # Now run the fits
-import BBBEngine
+from BBB import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
 
 # Both BazinBlackBody and ExponentialBlackBody fits are attempted
