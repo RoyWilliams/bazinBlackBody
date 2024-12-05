@@ -32,7 +32,6 @@ Now the code can be called as follows:
 ```
 import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
-BE.read_alert(alert)
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte:
     BE.plot(alert, dicte, 'image/%s.png'%objectId)
