@@ -9,7 +9,7 @@ file = 'sample_alert/%s.json' % objectId
 alert = json.loads(open(file).read())
 
 # Run the fitting engine
-from BBB import BBBEngine
+from bazinBlackBody import BBBEngine
 BE = BBBEngine.BBB('ZTF', verbose=True)
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte: 

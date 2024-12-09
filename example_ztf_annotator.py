@@ -7,7 +7,7 @@ Running the BazinBlackBody fit as an annotator. Stages are:
 (5) If there's a fit, send annotation back to Lasair
 """
 import json, sys, settings_ann, random
-from BBB import BBBEngine
+from bazinBlackBody import BBBEngine
 import lasair
 
 # first we set up pulling the stream from Lasair

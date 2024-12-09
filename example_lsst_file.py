@@ -7,7 +7,7 @@ objectId = 99999999999
 file = 'sample_alert/%d.json' % objectId
 alert = json.loads(open(file).read())
 
-from BBB import BBBEngine
+from bazinBlackBody import BBBEngine
 BE = BBBEngine.BBB('LSST', verbose=True)
 
 (dicte, dictb) =  BE.make_fit(alert)
