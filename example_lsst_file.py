@@ -13,7 +13,6 @@ BE = BBBEngine.BBB('LSST', verbose=True)
 (dicte, dictb) =  BE.make_fit(alert)
 if dicte: 
     BE.plot(alert, dicte, 'image/%s_e.png'%objectId)
-elif dictb: 
+if dictb: 
+    print('Peak is %f at time %f' % (dictb['peakValue'], dictb['peakTime']))
     BE.plot(alert, dictb, 'image/%s_b.png'%objectId)
-else:
-    print('Could not make fit')

@@ -15,4 +15,5 @@ BE = BBBEngine.BBB('ZTF', verbose=True)
 if dicte: 
     BE.plot(alert, dicte, 'image/%s_e.png'%objectId)
 if dictb: 
+    print('Peak is %f at time %f' % (dictb['peakValue'], dictb['peakTime']))
     BE.plot(alert, dictb, 'image/%s_b.png'%objectId)

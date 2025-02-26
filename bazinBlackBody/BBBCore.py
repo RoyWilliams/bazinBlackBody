@@ -41,7 +41,6 @@ def expit(t, lam, p):
     f = A * blackbody(lam, T) * er
     return f
 
-
 def func_bazin(params, tlam, f):
     t,lam = tlam
     residual = f - bazin(t, lam, params)
@@ -99,9 +98,20 @@ def fit_bazin(tobs, lobs, fobs, pbazin0, verbose=False):
 #    if dict['krerr'] > dict['kr']: 
 #        print('krerr>kr')
 #        return None
+
+    maxq = 0
+    maxwl = 0
+    for wl in WL:
+        q = blackbody(wl, dict['T'])
+        if q > maxq: 
+            maxq = q
+            maxwl = wl
+
+    tau = -math.log(dict['kf']/(dict['kr']-dict['kf'])) / dict['kr']
+    dict['peakTime'] = dict['t0'] + tau
+    dict['peakValue'] = bazin(dict['peakTime'], maxwl, fit)
     
     return dict
-
 
 def fit_expit(tobs, lobs, fobs, pexpit0, verbose=True):           
     npoint = len(tobs)
