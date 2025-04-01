@@ -106,6 +106,7 @@ class BBB():
                 print('Expit: T= %.2f (g-r=%.3f), k=%.3f' % \
                     (dicte['T'], g_minus_r(dicte['T']), dicte['k']))
             dicte['post_discovery'] = lc['post_discovery']
+            dicte['mjd_discovery'] = lc['mjd_discovery']
             try:
                 dicte['tns_name'] = lc['TNS']['tns_prefix'] +' '+ lc['TNS']['tns_name']
             except:
@@ -117,6 +118,7 @@ class BBB():
                 print('Bazin: T=%.2f (g-r=%.3f), kr=%.3f, kf=%.3f' % \
                     (dictb['T'],  g_minus_r(dictb['T']), dictb['kr'], dictb['kf']))
             dictb['post_discovery'] = lc['post_discovery']
+            dicte['mjd_discovery'] = lc['mjd_discovery']
             try:
                 dictb['tns_name'] = lc['TNS']['tns_prefix'] +' '+ lc['TNS']['tns_name']
             except:
