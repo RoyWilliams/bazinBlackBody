@@ -12,14 +12,9 @@ def mag2flux(mag, magerr, magzpsci):
 class BBB():
     def __init__(self, survey, nforced=4, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
         self.is_lsst = (survey == 'LSST')
-        A  = 10000
-        T  = 8
-        t0 = -6
-        kr = 1
-        kf = 0.1
         self.pexpit0 = [A, T, kr-kf]
         self.pbazin0 = [A, T, t0, kr, kf]
-        self.nforced = 4
+        self.nforced = nforced
         self.verbose = verbose
         np.seterr(all="ignore")
 
@@ -105,7 +100,7 @@ class BBB():
         npoint = len(lc['t'])
         objectId = lc['objectId']
     
-        dicte = fit_expit(tobs, lobs, fobs, self.pexpit0)
+        dicte = fit_expit(tobs, lobs, fobs, self.pexpit0, verbose=self.verbose)
         if dicte:
             if self.verbose:
                 print('Expit: T= %.2f (g-r=%.3f), k=%.3f' % \
@@ -116,7 +111,7 @@ class BBB():
             except:
                 dicte['tns_name'] = ''
     
-        dictb = fit_bazin(tobs, lobs, fobs, self.pbazin0)
+        dictb = fit_bazin(tobs, lobs, fobs, self.pbazin0, verbose=self.verbose)
         if dictb:
             if self.verbose:
                 print('Bazin: T=%.2f (g-r=%.3f), kr=%.3f, kf=%.3f' % \
