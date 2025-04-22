@@ -29,7 +29,7 @@ class BBB():
         kf = 0.1
         self.pexpit0 = [A, T, kr-kf]
         self.pbazin0 = [A, T, t0, kr, kf]
-        self.nforced = 4
+        self.nforced = nforced
         self.verbose = verbose
         np.seterr(all="ignore")
 
@@ -121,23 +121,25 @@ class BBB():
         npoint = len(lc['t'])
         objectId = lc['objectId']
     
-        dicte = fit_expit(tobs, lobs, fobs, self.pexpit0)
+        dicte = fit_expit(tobs, lobs, fobs, self.pexpit0, verbose=self.verbose)
         if dicte:
             if self.verbose:
                 print('Expit: T= %.2f (g-r=%.3f), k=%.3f' % \
                     (dicte['T'], g_minus_r(dicte['T']), dicte['k']))
             dicte['post_discovery'] = lc['post_discovery']
+            dicte['mjd_discovery'] = lc['mjd_discovery']
             try:
                 dicte['tns_name'] = lc['TNS']['tns_prefix'] +' '+ lc['TNS']['tns_name']
             except:
                 dicte['tns_name'] = ''
     
-        dictb = fit_bazin(tobs, lobs, fobs, self.pbazin0)
+        dictb = fit_bazin(tobs, lobs, fobs, self.pbazin0, verbose=self.verbose)
         if dictb:
             if self.verbose:
                 print('Bazin: T=%.2f (g-r=%.3f), kr=%.3f, kf=%.3f' % \
                     (dictb['T'],  g_minus_r(dictb['T']), dictb['kr'], dictb['kf']))
             dictb['post_discovery'] = lc['post_discovery']
+            dictb['mjd_discovery'] = lc['mjd_discovery']
             try:
                 dictb['tns_name'] = lc['TNS']['tns_prefix'] +' '+ lc['TNS']['tns_name']
             except:
