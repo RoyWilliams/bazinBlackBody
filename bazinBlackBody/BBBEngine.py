@@ -9,9 +9,19 @@ def mag2flux(mag, magerr, magzpsci):
     fluxerr = magerr * flux * 0.92  # ln(10)/2.5
     return (flux, fluxerr)
 
+# The LSST bands
+EXTCOEF   = {'u':4.145, 'g':3.237, 'r':2.273, 'i':1.684, 'z':1.323, 'y':1.088}
+
+# Modify magnitude for extinction
+def dustmag(mag, band, ebv):
+    return mag - ebv*EXTCOEF[band]
+def dustflux(flux, band, ebv):
+    return flux*math.pow(10, ebv*EXTCOEF[band]/2.5)
+
 class BBB():
-    def __init__(self, survey, nforced=4, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
+    def __init__(self, survey, nforced=4, ebv=0.0, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
         self.is_lsst = (survey == 'LSST')
+        self.ebv = ebv
         A  = 10000
         T  = 8
         t0 = -6
@@ -56,10 +66,13 @@ class BBB():
             print('%s has %s' % (objectId, len(sources)))
         for c in sources:
             if self.is_lsst:
-                lc['bandindex']     .append(BANDS.index(c['band']))
-                (flux, fluxerr) = (c['psfFlux'], c['psfFluxErr'])
+                # correct for extinction in case of LSST
+                band = c['band']
+                flux = dustflux(c['psfFlux'], band, self.ebv)
+                lc['bandindex'].append(BANDS.index(band))
+                (flux, fluxerr) = (flux, c['psfFluxErr'])
             else:
-                lc['bandindex']     .append(c['fid'])
+                lc['bandindex'].append(c['fid'])
                 (flux, fluxerr) = mag2flux(c['magpsf'], c['sigmapsf'], c['magzpsci'])
     
             lc['t']      .append(c[mjdkey] - lc['mjd_discovery'])
@@ -81,8 +94,11 @@ class BBB():
                 t = f[mjdkey]-lc['mjd_discovery']
                 lc['t'].insert(0, t)
                 if self.is_lsst:
+                    # correct for extinction in case of LSST
+                    band = f['band']
+                    flux = dustflux(f['psfFlux'], band, self.ebv)
                     lc['bandindex'].insert(0, BANDS.index(f[bandkey]))
-                    (flux, fluxerr) = (f['psfFlux'], f['psfFluxErr'])
+                    (flux, fluxerr) = (flux, f['psfFluxErr'])
                 else:
                     lc['bandindex'].insert(0, f[bandkey])
                     (flux, fluxerr) = (f['forcediffimflux'], f['forcediffimfluxunc'])
