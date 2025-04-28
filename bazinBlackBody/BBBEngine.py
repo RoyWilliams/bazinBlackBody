@@ -22,11 +22,6 @@ class BBB():
     def __init__(self, survey, nforced=4, ebv=0.0, A=10000, T=8, t0=-6, kr=1, kf=0.1, verbose=False):
         self.is_lsst = (survey == 'LSST')
         self.ebv = ebv
-        A  = 10000
-        T  = 8
-        t0 = -6
-        kr = 1
-        kf = 0.1
         self.pexpit0 = [A, T, kr-kf]
         self.pbazin0 = [A, T, t0, kr, kf]
         self.nforced = nforced
