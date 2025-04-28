@@ -40,10 +40,11 @@ if dictb:
 ```
 In addition to the survey names (mandatory), and the verbose flag, the class instantiation can have other parameters for the initial conditions of the fitting process:
 
-`nforced=4, A=10000, T=8, t0=-6, kr=1, kf=0.1`
+`nforced=4, ebv=0, A=10000, T=8, t0=-6, kr=1, kf=0.1`
 
 Where 
 - `nforced` is the number of forced phot points utilised before discovery
+- `ebv` is the E(B-V) extinction, default zero
 - `A` is the overall scale (in nanoJanskies for LSST and microJanskies for ZTF)
 - and `T` is the initial guess for the temparature in kiloKelvins
 - and `kr` and `kf` are initial guesses for the rise rate per day and the fall rate per day.
